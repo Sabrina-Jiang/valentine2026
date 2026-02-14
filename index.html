@@ -21,11 +21,14 @@
                 </div>
                 <p class="click-hint">CLICK TO OPEN</p>
             </div>
+
             <div id="dossier-view" class="hidden">
                 <div id="briefing-text" class="typewriter-container"></div>
                 <div id="auth-zone" class="auth-hidden">
                     <div id="fingerprint-btn">
-                        <svg class="finger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M12 7c0-2.8 2.2-5 5-5s5 2.2 5 5M12 22V12M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg>
+                        <svg class="finger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M12 7c0-2.8 2.2-5 5-5s5 2.2 5 5M12 22V12M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
+                        </svg>
                         <svg class="progress-svg"><circle id="progress-ring" cx="40" cy="40" r="38"></circle></svg>
                     </div>
                     <p id="auth-status">HOLD TO AUTHENTICATE</p>
@@ -59,14 +62,9 @@
 
         <section id="phase-3" class="stage-hidden">
             <div class="mission-header"><h3>PHASE 03</h3><p>14:00 - THE SILENT GUARDIANS</p></div>
-            <div class="bpl-decoder-box">
-                <p class="clue-text">"Guarded by two _____ that never sleep."</p>
-                <div class="input-wrap">
-                    <input type="text" id="bpl-input" placeholder="ENTER KEYWORD..." autocomplete="off">
-                    <div class="input-line"></div>
-                </div>
-                <button id="bpl-btn">DECRYPT ACCESS</button>
-            </div>
+            <p class="clue-text">"Guarded by two _____ that never sleep."</p>
+            <input type="text" id="bpl-input" placeholder="DECODE..." autocomplete="off">
+            <button id="bpl-btn">VERIFY IDENTITY</button>
         </section>
 
         <section id="phase-4" class="stage-hidden">
@@ -75,22 +73,19 @@
                 <canvas id="ica-canvas"></canvas>
                 <img id="ica-bg" src="https://images.unsplash.com/photo-1522156373667-4c7234bbd804?q=80&w=1000">
             </div>
-            <p class="instr">Wipe away the mist to reveal the port</p>
+            <p class="instr">Wipe away the mist</p>
         </section>
 
         <section id="phase-5" class="stage-hidden final-log">
-            <div class="timeline-box" id="final-timeline">
-                <div class="time-item"><span>09:00</span> – Pilates</div>
-                <div class="time-item"><span>10:30</span> – Deluxe Town Diner</div>
-                <div class="time-item"><span>12:00</span> – Boston Public Library</div>
-                <div class="time-item"><span>15:00</span> – ICA</div>
-                <div class="time-item"><span>20:00</span> – Basque Cheesecake</div>
+            <h1>MISSION COMPLETE</h1>
+            <div class="log-content">
+                <p>09:00 - Pilates at Core</p>
+                <p>10:30 - Deluxe Town Diner</p>
+                <p>12:00 - Boston Public Library</p>
+                <p>15:00 - ICA Waterfront Walk</p>
+                <p>20:00 - Basque Cheesecake & Wine</p>
             </div>
-            <div id="love-note" class="hidden">
-                <p class="decrypt-msg">You decrypted tomorrow.</p>
-                <p class="designer-msg">I designed it for you.</p>
-                <p class="love-msg">love you sabrina</p>
-            </div>
+            <p class="ending-note">The timeline is restored.</p>
         </section>
     </main>
     <script src="script.js"></script>
