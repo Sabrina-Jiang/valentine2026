@@ -13,7 +13,7 @@ const UI = {
 
 const music = document.getElementById('bg-music');
 
-// --- 开场逻辑 ---
+// --- 开场逻辑 (完全保留) ---
 document.getElementById('envelope-view').onclick = async () => {
     music.volume = 0;
     music.play().catch(() => {});
@@ -23,7 +23,7 @@ document.getElementById('envelope-view').onclick = async () => {
     document.getElementById('auth-zone').classList.remove('auth-hidden');
 };
 
-// --- 指纹逻辑 ---
+// --- 指纹逻辑 (完全保留) ---
 let hold = 0, authTimer;
 const fBtn = document.getElementById('fingerprint-btn'), ring = document.getElementById('progress-ring');
 
@@ -41,7 +41,7 @@ const stopAuth = () => { clearInterval(authTimer); if(hold < 100) { hold = 0; ri
 fBtn.onmousedown = fBtn.ontouchstart = startAuth;
 window.onmouseup = window.ontouchend = stopAuth;
 
-// --- Phase 1: Pilates ---
+// --- Phase 1: Pilates (完全保留) ---
 function initPhase1() {
     const slider = document.getElementById('time-slider');
     const core = document.getElementById('breath-core');
@@ -64,7 +64,7 @@ function initPhase1() {
     };
 }
 
-// --- Phase 2: Diner (拼字逻辑修复) ---
+// --- Phase 2: Diner (完全保留) ---
 function initPhase2() {
     let fills = 0;
     document.querySelectorAll('.cup').forEach(c => {
@@ -84,7 +84,6 @@ function initPhase2() {
 function startDinerPuzzle() {
     document.getElementById('diner-puzzle').classList.remove('hidden');
     const target = "DELUXETOWNDINER";
-    // 为了防止太难，打乱字母但保持识别度
     const poolChars = "DELUXETOWNDINER".split('').sort(() => Math.random() - 0.5);
     const slots = document.getElementById('slots'), poolEl = document.getElementById('pool');
     let current = "";
@@ -103,7 +102,6 @@ function startDinerPuzzle() {
                 if(current === target) {
                     setTimeout(() => UI.switch('phase-2', 'phase-3'), 1000);
                 } else if(current.length === target.length) {
-                    // 输错重置
                     setTimeout(() => {
                         current = "";
                         [...slots.children].forEach(s => s.innerText = "");
@@ -116,29 +114,71 @@ function startDinerPuzzle() {
     });
 }
 
-// --- Phase 3: BPL ---
+// --- Phase 3: BPL (优化了错误提示，更电影感) ---
 document.getElementById('bpl-btn').onclick = () => {
-    if(document.getElementById('bpl-input').value.toLowerCase().includes('lion')) {
+    const input = document.getElementById('bpl-input');
+    if(input.value.toLowerCase().includes('lion')) {
         UI.switch('phase-3', 'phase-4');
         initPhase4();
+    } else {
+        input.value = "";
+        input.placeholder = "ACCESS DENIED";
+        setTimeout(() => input.placeholder = "DECODE...", 2000);
     }
 };
 
-// --- Phase 4: ICA ---
+// --- Phase 4: ICA (加入了防误触滑动，并衔接到了结局动画) ---
 function initPhase4() {
     const canvas = document.getElementById('ica-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 280; canvas.height = 380;
     ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'destination-out';
+    
     let draws = 0;
     const paint = (e) => {
+        e.preventDefault(); // 极其重要：防止涂抹时手机屏幕跟着上下滑动
         const rect = canvas.getBoundingClientRect();
         const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
         const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
         ctx.beginPath(); ctx.arc(x, y, 35, 0, Math.PI*2); ctx.fill();
         draws++;
-        if(draws > 100) setTimeout(() => UI.switch('phase-4', 'phase-5'), 1500);
+        
+        // 当涂抹面积达到要求时
+        if(draws > 100) {
+            canvas.onmousemove = canvas.ontouchmove = null; // 停止侦听，防止重复触发
+            setTimeout(() => {
+                UI.switch('phase-4', 'phase-5');
+                initPhase5();
+            }, 1000);
+        }
     };
     canvas.onmousemove = canvas.ontouchmove = paint;
+}
+
+// --- Phase 5: 最终表白动画逻辑 ---
+function initPhase5() {
+    const timeItems = document.querySelectorAll('.time-item');
+    const decryptMsg = document.querySelector('.decrypt-msg');
+    const designerMsg = document.querySelector('.designer-msg');
+
+    // 1. 时间线一行一行慢慢浮现
+    timeItems.forEach((item, index) => {
+        setTimeout(() => {
+            item.classList.add('fade-in-up');
+        }, index * 1000); // 每一行间隔 1 秒
+    });
+
+    // 计算等待所有时间线显现完的时间
+    const textDelay = timeItems.length * 1000 + 1000; 
+
+    // 2. 出现第一句文案
+    setTimeout(() => {
+        decryptMsg.classList.add('fade-in-up');
+    }, textDelay);
+
+    // 3. 出现落款表白
+    setTimeout(() => {
+        designerMsg.classList.add('fade-in-up');
+    }, textDelay + 2500); 
 }

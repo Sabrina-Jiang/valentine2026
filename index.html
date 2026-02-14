@@ -62,9 +62,11 @@
 
         <section id="phase-3" class="stage-hidden">
             <div class="mission-header"><h3>PHASE 03</h3><p>14:00 - THE SILENT GUARDIANS</p></div>
-            <p class="clue-text">"Guarded by two _____ that never sleep."</p>
-            <input type="text" id="bpl-input" placeholder="DECODE..." autocomplete="off">
-            <button id="bpl-btn">VERIFY IDENTITY</button>
+            <div class="bpl-box">
+                <p class="clue-text">"Guarded by two _____ that never sleep."</p>
+                <input type="text" id="bpl-input" placeholder="DECODE..." autocomplete="off">
+                <button id="bpl-btn">VERIFY IDENTITY</button>
+            </div>
         </section>
 
         <section id="phase-4" class="stage-hidden">
@@ -77,15 +79,17 @@
         </section>
 
         <section id="phase-5" class="stage-hidden final-log">
-            <h1>MISSION COMPLETE</h1>
-            <div class="log-content">
-                <p>09:00 - Pilates at Core</p>
-                <p>10:30 - Deluxe Town Diner</p>
-                <p>12:00 - Boston Public Library</p>
-                <p>15:00 - ICA Waterfront Walk</p>
-                <p>20:00 - Basque Cheesecake & Wine</p>
+            <div id="final-timeline">
+                <p class="time-item"><span>09:00</span> – Pilates</p>
+                <p class="time-item"><span>10:30</span> – Deluxe Town Diner</p>
+                <p class="time-item"><span>12:00</span> – Boston Public Library</p>
+                <p class="time-item"><span>15:00</span> – ICA</p>
+                <p class="time-item"><span>20:00</span> – Basque Cheesecake</p>
             </div>
-            <p class="ending-note">The timeline is restored.</p>
+            <div id="love-note">
+                <p class="decrypt-msg">You decrypted tomorrow.</p>
+                <p class="designer-msg">I designed it for you. \nLove you, Sabrina</p>
+            </div>
         </section>
     </main>
     <script src="script.js"></script>

@@ -49,3 +49,29 @@ section { position: fixed; inset: 0; display: none; flex-direction: column; alig
 @keyframes breathe-pulse { 0%, 100% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.2); opacity: 0.8; } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .hidden { display: none !important; }
+
+/* =========================================
+   在此下方是为你全新优化的图书馆与结局样式
+   ========================================= */
+
+/* Phase 3 UI 优化 */
+.bpl-box { text-align: center; width: 100%; max-width: 280px; }
+.clue-text { font-size: 14px; color: #888; font-style: italic; margin-bottom: 30px; letter-spacing: 1px; }
+#bpl-input { background: transparent; border: none; border-bottom: 1px solid #444; color: var(--gold); text-align: center; font-size: 16px; padding: 10px; width: 100%; outline: none; font-family: inherit; letter-spacing: 2px; transition: border-color 0.3s; margin-bottom: 30px; }
+#bpl-input:focus { border-bottom: 1px solid var(--gold); }
+#bpl-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 12px 24px; font-family: inherit; font-size: 12px; cursor: pointer; letter-spacing: 2px; transition: 0.3s; }
+#bpl-btn:active { background: var(--gold); color: #000; }
+
+/* Phase 5 结局动画与排版 */
+.final-log { justify-content: center; }
+#final-timeline { margin-bottom: 40px; text-align: left; display: inline-block; }
+.time-item { font-size: 14px; margin: 15px 0; color: #aaa; opacity: 0; transform: translateY(10px); }
+.time-item span { color: var(--gold); font-weight: bold; margin-right: 12px; }
+
+#love-note { text-align: center; margin-top: 20px; }
+.decrypt-msg { font-size: 16px; color: #d1d1d1; margin-bottom: 25px; opacity: 0; transform: translateY(10px); }
+.designer-msg { font-size: 16px; color: var(--gold); opacity: 0; transform: translateY(10px); letter-spacing: 1px; }
+
+/* 触发后调用的渐显动画 */
+.fade-in-up { animation: fadeInUp 1.5s ease forwards; }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
