@@ -9,9 +9,7 @@
 </head>
 <body>
     <div class="grain-overlay"></div>
-    <audio id="bg-music" loop preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-music" loop preload="auto" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-17.mp3"></audio>
 
     <main id="game-viewport">
         <section id="intro-module" class="stage-visible">
@@ -23,11 +21,14 @@
                 </div>
                 <p class="click-hint">CLICK TO OPEN</p>
             </div>
+
             <div id="dossier-view" class="hidden">
                 <div id="briefing-text" class="typewriter-container"></div>
                 <div id="auth-zone" class="auth-hidden">
                     <div id="fingerprint-btn">
-                        <svg class="finger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M12 7c0-2.8 2.2-5 5-5s5 2.2 5 5M12 22V12M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg>
+                        <svg class="finger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 11c0-1.1.9-2 2-2s2 .9 2 2M12 7c0-2.8 2.2-5 5-5s5 2.2 5 5M12 22V12M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
+                        </svg>
                         <svg class="progress-svg"><circle id="progress-ring" cx="40" cy="40" r="38"></circle></svg>
                     </div>
                     <p id="auth-status">HOLD TO AUTHENTICATE</p>
@@ -36,16 +37,15 @@
         </section>
 
         <section id="phase-1" class="stage-hidden">
-            <div class="mission-header"><h3>PHASE 01</h3><p>09:00 - CORE STRETCH</p></div>
+            <div class="mission-header"><h3>PHASE 01</h3><p>09:00 - THE CORE BREATH</p></div>
             <div id="clock-container">
                 <div id="time-ring"><div id="marker-9"></div><div id="hour-hand-p1"></div></div>
-                <div id="stretch-zone" class="hidden">
-                    <div class="band left-band"></div>
-                    <div class="band right-band"></div>
-                    <div id="stretch-handle">HOLD & PULL APART</div>
-                </div>
+                <div id="breath-core" class="hidden"></div>
             </div>
-            <input type="range" id="time-slider" min="0" max="359" value="0">
+            <div class="controls-container">
+                <input type="range" id="time-slider" min="0" max="359" value="0">
+                <p class="instr" id="p1-instr">Set the time to 9:00</p>
+            </div>
         </section>
 
         <section id="phase-2" class="stage-hidden">
@@ -64,7 +64,7 @@
             <div class="mission-header"><h3>PHASE 03</h3><p>14:00 - THE SILENT GUARDIANS</p></div>
             <p class="clue-text">"Guarded by two _____ that never sleep."</p>
             <input type="text" id="bpl-input" placeholder="DECODE..." autocomplete="off">
-            <button id="bpl-btn">VERIFY</button>
+            <button id="bpl-btn">VERIFY IDENTITY</button>
         </section>
 
         <section id="phase-4" class="stage-hidden">
@@ -73,7 +73,7 @@
                 <canvas id="ica-canvas"></canvas>
                 <img id="ica-bg" src="https://images.unsplash.com/photo-1522156373667-4c7234bbd804?q=80&w=1000">
             </div>
-            <p class="instr">Wipe away the mist to reveal the port</p>
+            <p class="instr">Wipe away the mist</p>
         </section>
 
         <section id="phase-5" class="stage-hidden final-log">
@@ -85,7 +85,7 @@
                 <p>17:00 - ICA Waterfront Walk</p>
                 <p>20:00 - Basque Cheesecake & Wine</p>
             </div>
-            <p class="ending-note">The timeline is restored. See you tomorrow.</p>
+            <p class="ending-note">The timeline is restored.</p>
         </section>
     </main>
     <script src="script.js"></script>
