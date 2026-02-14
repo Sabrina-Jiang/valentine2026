@@ -1,32 +1,34 @@
 const UI = {
     ringTotal: 238.76,
-    type: async (text, id) => {
-        const el = document.getElementById(id);
-        for(let char of text) {
+    typewriter: async (text, elementId) => {
+        const el = document.getElementById(elementId);
+        el.innerHTML = "";
+        for (let char of text) {
             el.innerHTML += char === "\n" ? "<br>" : char;
-            await new Promise(r => setTimeout(r, 40 Char === " " ? 20 : 40));
+            await new Promise(r => setTimeout(r, 40));
         }
     },
-    transition: (from, to) => {
+    switch: (from, to) => {
         document.getElementById(from).classList.replace('stage-visible', 'stage-hidden');
         document.getElementById(to).classList.replace('stage-hidden', 'stage-visible');
     }
 };
 
-// --- INTRO LOGIC ---
+// --- 开场逻辑 ---
 document.getElementById('envelope-view').onclick = async () => {
     document.getElementById('envelope-view').classList.add('hidden');
     document.getElementById('dossier-view').classList.remove('hidden');
-    await UI.type("Agent,\nSomeone stole tomorrow.\nReconstruct the itinerary.\nPlease authenticate.", "briefing-text");
-    document.getElementById('auth-zone').classList.add('opacity-100');
+    await UI.typewriter("Jaden,\nSomeone stole tomorrow.\nEvery plan, every memory we haven't made yet...\nReconstruct the itinerary.", "briefing-text");
+    document.getElementById('auth-zone').classList.replace('auth-hidden', 'auth-visible');
+    document.getElementById('auth-zone').style.opacity = 1;
 };
 
+// --- 指纹认证 ---
 let holdProgress = 0;
 let holdTimer;
-const fingerBtn = document.getElementById('fingerprint-btn');
 const ring = document.getElementById('progress-ring');
 
-fingerBtn.onmousedown = fingerBtn.ontouchstart = (e) => {
+const startHold = (e) => {
     e.preventDefault();
     holdTimer = setInterval(() => {
         holdProgress += 2;
@@ -34,12 +36,12 @@ fingerBtn.onmousedown = fingerBtn.ontouchstart = (e) => {
         if(holdProgress >= 100) {
             clearInterval(holdTimer);
             document.getElementById('bg-music').play();
-            UI.transition('intro-module', 'phase-1');
+            UI.switch('intro-module', 'phase-1');
         }
     }, 30);
 };
 
-window.onmouseup = window.ontouchend = () => {
+const stopHold = () => {
     clearInterval(holdTimer);
     if(holdProgress < 100) {
         holdProgress = 0;
@@ -47,57 +49,61 @@ window.onmouseup = window.ontouchend = () => {
     }
 };
 
-// --- PHASE 1: PILATES ---
-let balance = 0;
+const fBtn = document.getElementById('fingerprint-btn');
+fBtn.onmousedown = fBtn.ontouchstart = startHold;
+window.onmouseup = window.ontouchend = stopHold;
+
+// --- Phase 1: Pilates ---
 let timeOK = false;
+let balanceProgress = 0;
 document.getElementById('time-slider').oninput = (e) => {
     document.getElementById('hour-hand-p1').style.transform = `rotate(${e.target.value}deg)`;
     if(Math.abs(e.target.value - 270) < 10) {
         timeOK = true;
-        document.getElementById('balance-progress-container').classList.add('opacity-100');
+        document.getElementById('balance-progress-container').style.opacity = 1;
     }
 };
 
-// 平衡球自动逻辑 (电脑模拟，手机用陀螺仪)
 setInterval(() => {
     if(!timeOK) return;
-    balance += 0.5;
-    document.getElementById('balance-fill').style.width = balance + '%';
-    if(balance >= 100) {
-        timeOK = false; 
-        setTimeout(() => UI.transition('phase-1', 'phase-2'), 1000);
+    balanceProgress += 0.4;
+    document.getElementById('balance-fill').style.width = balanceProgress + "%";
+    if(balanceProgress >= 100) {
+        timeOK = false;
+        setTimeout(() => UI.switch('phase-1', 'phase-2'), 100);
     }
 }, 50);
 
-// --- PHASE 2: DINER ---
-let cups = 0;
+// --- Phase 2: Diner ---
+let filledCups = 0;
 document.querySelectorAll('.cup').forEach(cup => {
     cup.onclick = () => {
-        if(cup.classList.contains('filled')) return;
-        cup.classList.add('filled');
-        cups++;
-        if(cups === 3) {
-            document.getElementById('diner-img').style.opacity = "1";
+        if(cup.style.opacity === "1") return;
+        cup.style.opacity = "1";
+        cup.style.filter = "grayscale(0)";
+        filledCups++;
+        if(filledCups === 3) {
+            document.getElementById('diner-img').style.opacity = 1;
             document.getElementById('diner-img').style.filter = "grayscale(0)";
-            document.getElementById('neon-sign').classList.replace('opacity-0', 'opacity-100');
-            setTimeout(() => UI.transition('phase-2', 'phase-3'), 2500);
+            document.getElementById('neon-sign').classList.remove('hidden');
+            setTimeout(() => UI.switch('phase-2', 'phase-3'), 2000);
         }
     };
 });
 
-// --- PHASE 3: BPL ---
+// --- Phase 3: BPL ---
 document.getElementById('bpl-btn').onclick = () => {
-    if(document.getElementById('bpl-input').value.toLowerCase().includes('lion')) {
-        UI.transition('phase-3', 'phase-4');
+    const val = document.getElementById('bpl-input').value.toLowerCase();
+    if(val.includes('lion')) {
+        UI.switch('phase-3', 'phase-4');
     } else {
-        document.getElementById('bpl-input').style.color = 'red';
-        setTimeout(() => document.getElementById('bpl-input').style.color = '', 500);
+        alert("ACCESS DENIED: Hint - Check the statues at the entrance.");
     }
 };
 
-// --- PHASE 4: ICA ---
+// --- Phase 4: ICA ---
 document.getElementById('ica-spot').onclick = () => {
-    document.getElementById('ica-img').style.opacity = "1";
+    document.getElementById('ica-img').style.opacity = 1;
     document.getElementById('ica-img').style.filter = "grayscale(0) brightness(1.2)";
-    setTimeout(() => UI.transition('phase-4', 'phase-5'), 2000);
+    setTimeout(() => UI.switch('phase-4', 'phase-5'), 2000);
 };
