@@ -22,7 +22,7 @@
                 <p class="click-hint">CLICK TO OPEN</p>
             </div>
 
-            <div id="dossier-view" class="hidden content-wrapper">
+            <div id="dossier-view" class="hidden">
                 <div id="briefing-text" class="typewriter-container"></div>
                 <div id="auth-zone" class="auth-hidden">
                     <div id="fingerprint-btn">
@@ -42,7 +42,7 @@
                 <h3>PHASE 01</h3>
                 <p>RECOVERING: 09:00 PILATES</p>
             </div>
-            <div id="mechanism">
+            <div id="mechanism-container">
                 <div id="time-ring">
                     <div id="marker-9"></div>
                     <div id="hour-hand-p1"></div>
@@ -54,8 +54,8 @@
             <div class="controls-container">
                 <input type="range" id="time-slider" min="0" max="359" value="0">
                 <div id="balance-progress-container" class="opacity-0">
-                    <div class="progress-bar"><div id="balance-fill"></div></div>
-                    <p>HOLD STEADY TO STRENGTHEN CORE</p>
+                    <div class="progress-bar-bg"><div id="balance-fill"></div></div>
+                    <p class="instr">HOLD STEADY TO STRENGTHEN CORE</p>
                 </div>
             </div>
         </section>
@@ -69,6 +69,7 @@
             <div class="cup-row">
                 <span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span>
             </div>
+            <p class="instr">TILT PHONE TO POUR COFFEE</p>
         </section>
 
         <section id="phase-3" class="stage-hidden">
@@ -84,11 +85,11 @@
                 <img id="ica-img" src="https://images.unsplash.com/photo-1522156373667-4c7234bbd804?q=80&w=1000">
                 <div id="ica-spot"></div>
             </div>
-            <p class="hint">Locate the cantilever over the water.</p>
+            <p class="instr">Locate the cantilever over the water.</p>
         </section>
 
         <section id="phase-5" class="stage-hidden final-log">
-            <h1>MISSION LOG: RESTORED</h1>
+            <h1>MISSION LOG</h1>
             <div class="log-content">
                 <p>09:00 - Pilates at Core</p>
                 <p>11:30 - Brunch at Deluxe Town Diner</p>
@@ -96,7 +97,7 @@
                 <p>17:00 - ICA Waterfront Walk</p>
                 <p>20:00 - Basque Cheesecake & Wine</p>
             </div>
-            <p class="ending-note">You solved tomorrow. I'll make it unforgettable.</p>
+            <p class="ending-note">You've recovered the itinerary. See you tomorrow.</p>
         </section>
     </main>
     <script src="script.js"></script>
