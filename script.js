@@ -1,12 +1,9 @@
 const UI = {
     ringTotal: 238.76,
-    typewriter: async (text, id) => {
+    type: async (text, id) => {
         const el = document.getElementById(id);
         el.innerHTML = "";
-        for (let char of text) {
-            el.innerHTML += char === "\n" ? "<br>" : char;
-            await new Promise(r => setTimeout(r, 45));
-        }
+        for(let c of text) { el.innerHTML += c === "\n" ? "<br>" : c; await new Promise(r => setTimeout(r, 40)); }
     },
     switch: (from, to) => {
         document.getElementById(from).classList.replace('stage-visible', 'stage-hidden');
@@ -14,139 +11,116 @@ const UI = {
     }
 };
 
-// --- 开场逻辑 ---
+const music = document.getElementById('bg-music');
+
+// --- INTRO ---
 document.getElementById('envelope-view').onclick = async () => {
+    music.play().catch(() => {}); // 第一次交互尝试播放
     document.getElementById('envelope-view').classList.add('hidden');
     document.getElementById('dossier-view').classList.remove('hidden');
-    await UI.typewriter("Agent,\nSomeone stole tomorrow.\nEvery plan, every memory...\nReconstruct the itinerary.\nAuthenticate to begin.", "briefing-text");
-    document.getElementById('auth-zone').style.opacity = 1;
+    await UI.type("Jaden,\nThe itinerary is fragmented.\nSolve the core to proceed.\nAuthenticate now.", "briefing-text");
+    document.querySelector('.auth-hidden').classList.add('stage-visible');
 };
 
-// --- 指纹认证与陀螺仪权限 ---
-let holdProgress = 0;
-let holdTimer;
-const ring = document.getElementById('progress-ring');
-
-const startHold = async (e) => {
-    e.preventDefault();
-    holdTimer = setInterval(() => {
-        holdProgress += 2;
-        ring.style.strokeDashoffset = UI.ringTotal - (holdProgress/100)*UI.ringTotal;
-        if(holdProgress >= 100) {
-            clearInterval(holdTimer);
-            handleSuccess();
-        }
+let hold = 0, timer;
+const fBtn = document.getElementById('fingerprint-btn'), ring = document.getElementById('progress-ring');
+const startH = (e) => { 
+    e.preventDefault(); 
+    music.play(); // 第二次交互强行触发
+    timer = setInterval(() => {
+        hold += 2; ring.style.strokeDashoffset = UI.ringTotal - (hold/100)*UI.ringTotal;
+        if(hold >= 100) { clearInterval(timer); UI.switch('intro-module', 'phase-1'); }
     }, 30);
 };
+const stopH = () => { clearInterval(timer); if(hold < 100) { hold = 0; ring.style.strokeDashoffset = UI.ringTotal; }};
+fBtn.onmousedown = fBtn.ontouchstart = startH; window.onmouseup = window.ontouchend = stopH;
 
-const stopHold = () => {
-    clearInterval(holdTimer);
-    if(holdProgress < 100) {
-        holdProgress = 0;
-        ring.style.strokeDashoffset = UI.ringTotal;
+// --- PHASE 1: STRETCH ---
+let stretchDist = 0;
+document.getElementById('time-slider').oninput = (e) => {
+    document.getElementById('hour-hand-p1').style.transform = `rotate(${e.target.value}deg)`;
+    if(Math.abs(e.target.value - 270) < 10) {
+        document.getElementById('marker-9').classList.add('marker-active');
+        document.getElementById('stretch-zone').classList.remove('hidden');
     }
 };
 
-const handleSuccess = async () => {
-    document.getElementById('bg-music').play();
-    
-    // iOS 陀螺仪权限请求
-    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        try {
-            await DeviceOrientationEvent.requestPermission();
-        } catch (e) { console.error(e); }
-    }
-    
-    UI.switch('intro-module', 'phase-1');
-    initPhase1Logic();
+const handle = document.getElementById('stretch-handle');
+handle.ontouchmove = (e) => {
+    // 模拟拉伸：计算手指滑动的距离
+    stretchDist += 2;
+    document.querySelector('.left-band').style.width = (20 + stretchDist) + "px";
+    document.querySelector('.right-band').style.width = (20 + stretchDist) + "px";
+    if(stretchDist > 100) { UI.switch('phase-1', 'phase-2'); initDiner(); }
 };
 
-const fBtn = document.getElementById('fingerprint-btn');
-fBtn.onmousedown = fBtn.ontouchstart = startHold;
-window.onmouseup = window.ontouchend = stopHold;
-
-// --- Phase 1: Pilates 逻辑 ---
-let timeOK = false;
-let balanceScore = 0;
-
-function initPhase1Logic() {
-    const slider = document.getElementById('time-slider');
-    const ball = document.getElementById('balance-ball');
-    
-    slider.oninput = (e) => {
-        const val = e.target.value;
-        document.getElementById('hour-hand-p1').style.transform = `rotate(${val}deg)`;
-        // 9点钟是 270度
-        if(Math.abs(val - 270) < 10) {
-            timeOK = true;
-            document.getElementById('marker-9').classList.add('marker-active');
-            document.getElementById('balance-progress-container').classList.remove('opacity-0');
-        } else {
-            timeOK = false;
-            document.getElementById('marker-9').classList.remove('marker-active');
-        }
-    };
-
-    window.addEventListener('deviceorientation', (e) => {
-        if(!timeOK) return;
-        // 映射倾斜到小球位移
-        let x = Math.max(-35, Math.min(35, e.gamma * 1.5));
-        let y = Math.max(-35, Math.min(35, (e.beta - 45) * 1.5));
-        ball.style.transform = `translate(${x}px, ${y}px)`;
-
-        // 中心判定
-        if(Math.abs(x) < 12 && Math.abs(y) < 12) {
-            balanceScore += 0.8;
-        } else {
-            balanceScore = Math.max(0, balanceScore - 0.2);
-        }
-        document.getElementById('balance-fill').style.width = balanceScore + "%";
-        
-        if(balanceScore >= 100) {
-            timeOK = false; // 停止逻辑
-            setTimeout(() => { UI.switch('phase-1', 'phase-2'); initPhase2Logic(); }, 1000);
+// --- PHASE 2: DINER ---
+function initDiner() {
+    let fills = 0;
+    document.querySelectorAll('.cup').forEach(c => c.onclick = () => {
+        c.style.opacity = "1"; c.style.filter = "grayscale(0)"; c.style.transform = "scale(1.2)";
+        fills++;
+        if(fills === 3) {
+            document.getElementById('diner-img').style.opacity = "1";
+            document.getElementById('diner-img').style.filter = "grayscale(0)";
+            setTimeout(setupWordPuzzle, 1000);
         }
     });
 }
 
-// --- Phase 2: Diner 逻辑 ---
-function initPhase2Logic() {
-    let filled = 0;
-    // 点击填充作为备选，重力倾斜作为主要
-    document.querySelectorAll('.cup').forEach(cup => {
-        cup.onclick = () => {
-            if(cup.classList.contains('done')) return;
-            cup.classList.add('done');
-            cup.style.opacity = 1; cup.style.filter = "grayscale(0)";
-            filled++;
-            if(filled === 3) {
-                document.getElementById('diner-img').style.opacity = 1;
-                document.getElementById('diner-img').style.filter = "grayscale(0)";
-                document.getElementById('neon-sign').classList.remove('hidden');
-                setTimeout(() => UI.switch('phase-2', 'phase-3'), 2500);
+function setupWordPuzzle() {
+    document.getElementById('diner-puzzle').classList.remove('hidden');
+    const target = "DELUXETOWNDINER";
+    const pool = "ELUXDETWONDINER".split('').sort(() => Math.random()-0.5);
+    const slots = document.getElementById('slots');
+    const poolEl = document.getElementById('pool');
+    let current = "";
+
+    [...target].forEach(() => { const s = document.createElement('div'); s.className = 'slot'; slots.appendChild(s); });
+    pool.forEach(l => {
+        const le = document.createElement('div'); le.className = 'letter'; le.innerText = l;
+        le.onclick = () => {
+            if(current.length < target.length) {
+                slots.children[current.length].innerText = l; current += l; le.style.opacity = "0.2";
+                if(current === target) setTimeout(() => UI.switch('phase-2', 'phase-3'), 1000);
             }
         };
-    });
-
-    window.addEventListener('deviceorientation', (e) => {
-        if(document.getElementById('phase-2').classList.contains('stage-visible')) {
-            if(Math.abs(e.gamma) > 35) { // 侧倾手机
-                const next = document.querySelector('.cup:not(.done)');
-                if(next) next.click();
-            }
-        }
+        poolEl.appendChild(le);
     });
 }
 
-// --- Phase 3 & 4 基础逻辑 ---
+// --- PHASE 3: BPL ---
 document.getElementById('bpl-btn').onclick = () => {
     if(document.getElementById('bpl-input').value.toLowerCase().includes('lion')) {
         UI.switch('phase-3', 'phase-4');
+        initICA();
     }
 };
 
-document.getElementById('ica-spot').onclick = () => {
-    document.getElementById('ica-img').style.opacity = 1;
-    document.getElementById('ica-img').style.filter = "grayscale(0)";
-    setTimeout(() => UI.switch('phase-4', 'phase-5'), 2000);
-};
+// --- PHASE 4: ICA (Canvas Reveal) ---
+function initICA() {
+    const canvas = document.getElementById('ica-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 300; canvas.height = 400;
+    
+    // 覆盖一层灰色的蒙版
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'destination-out';
+
+    let cleared = 0;
+    const handleMove = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 30, 0, Math.PI * 2);
+        ctx.fill();
+        cleared++;
+        if(cleared > 150) { // 涂抹足够面积后过关
+            setTimeout(() => UI.switch('phase-4', 'phase-5'), 1500);
+        }
+    };
+    canvas.addEventListener('touchmove', handleMove);
+}
